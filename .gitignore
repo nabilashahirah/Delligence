@@ -1,0 +1,12 @@
+node_modules/
+.env
+.claude/settings.local.json
+*.log
+dist/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
