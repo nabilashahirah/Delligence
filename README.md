@@ -55,9 +55,6 @@ cd client
 npm install
 npm run dev
 ```
-
-Log in as `admin@dentelligence.com` / `Admin@123` — created by the seed script.
-
 ---
 
 ## Architecture
