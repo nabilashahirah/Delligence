@@ -105,7 +105,7 @@ Deep-dive docs live in [`doc/`](doc/):
 
 ## Project Status
 
-Active internship project. Currently on the **AI automation roadmap**:
+Active project. Currently on the **AI automation roadmap**:
 
 - ✅ Phase 1a — read-only tool calling (5 tools)
 - 🔜 Phase 1b — write tools (`book_appointment`, `send_reminder`, `cancel_visit`) with confirmation UX
