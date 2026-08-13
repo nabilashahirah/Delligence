@@ -1,16 +1,31 @@
 # 09 - AI & ML
 
-## AI Chat (Google Gemini)
+## AI Chat (Google Gemini) — tool-calling agent
 
 ### Service — [app/services/ai_chat.py](../app/services/ai_chat.py)
 
 - Uses **`gemini-flash-latest`** via the `google-genai` SDK. This alias tracks whichever current model Google recommends — safer than pinning a version that may be retired or drop from your free-tier quota. `max_output_tokens` is 1024 to leave headroom for the model's internal thinking overhead.
 - Requires `GEMINI_API_KEY` in `.env`.
-- Each request:
-  1. Fetches today's appointments (status counts, active queue, avg wait time).
-  2. Serialises the snapshot as JSON context.
-  3. Sends a system prompt instructing the model to answer **only** from that context.
-  4. Returns the model's text response.
+- **Architecture: tool-calling loop** (Phase 1a of the AI-automation roadmap). Instead of pre-building a JSON context blob, the LLM is given a set of **read-only tools** and decides which to call. The service loops (up to `MAX_TOOL_ITERATIONS = 6`) — model call → execute any function calls → feed results back → repeat until the model produces a plain text answer.
+- This makes the assistant an **agent**, not a chatbot: it takes actions (queries Mongo through tools) rather than answering from a fixed context.
+
+### Tools — [app/services/ai_tools.py](../app/services/ai_tools.py)
+
+All read-only. Registered in `TOOL_REGISTRY` and declared to Gemini via `TOOL_DECLARATIONS`.
+
+| Tool | Purpose |
+| --- | --- |
+| `find_patient(query, limit=5)` | Search patients by name substring, IC/passport, or phone |
+| `get_patient_history(patient_id, limit=10)` | Recent appointments + treatments + medical history for one patient |
+| `get_queue_status()` | Current live queue snapshot (scheduled / checked-in / in-progress today) |
+| `get_appointments_for(date, dentist=None)` | Schedule for a specific date, optionally filtered by dentist |
+| `check_availability(date, dentist)` | Open 30-min slots for a dentist on a date (clinic hours 9–17) |
+
+Write tools (booking, sending messages, cancelling) are deliberately **out of scope for Phase 1a** — they arrive in Phase 1b with a confirmation UX.
+
+### Cost / latency note
+
+Each user question now costs 2–4 Gemini calls (one per loop iteration). Expect ~2–5s end-to-end latency vs. ~1s for the old single-shot. The tradeoff is factual grounding: the model can no longer hallucinate a patient because it must call `find_patient` first.
 
 ### Route
 

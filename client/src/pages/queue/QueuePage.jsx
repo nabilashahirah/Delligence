@@ -51,13 +51,33 @@ export default function QueuePage() {
     refetchInterval: 60000,
   });
 
-  const { mutate: advance, isPending } = useMutation({
+  const [pendingId, setPendingId] = useState(null);
+
+  const { mutate: advance } = useMutation({
     mutationFn: ({ id, status }) => updateStatus(id, status),
+    onMutate: ({ id, status }) => {
+      setPendingId(id);
+      // Optimistic: if completing, remove from queue immediately for a smooth UX.
+      // Snapshot the previous cache so we can rollback on error.
+      const prev = qc.getQueryData(['queue']);
+      if (status === 'completed') {
+        qc.setQueryData(['queue'], (old) => {
+          if (!old?.data?.data?.queue) return old;
+          const q = old.data.data.queue.filter(c => c.appointmentId !== id);
+          return { ...old, data: { ...old.data, data: { ...old.data.data, count: q.length, queue: q } } };
+        });
+      }
+      return { prev };
+    },
+    onSettled: () => setPendingId(null),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['queue'] });
       toast.success('Status updated');
     },
-    onError: (err) => toast.error(err.response?.data?.message || 'Failed'),
+    onError: (err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['queue'], ctx.prev);
+      toast.error(err.response?.data?.message || 'Failed');
+    },
   });
 
   const queue = data?.data?.data?.queue ?? [];
@@ -127,7 +147,8 @@ export default function QueuePage() {
                 <Button
                   size="sm"
                   variant={entry.status === 'in-progress' ? 'primary' : 'secondary'}
-                  loading={isPending}
+                  loading={pendingId === entry.appointmentId}
+                  disabled={pendingId !== null && pendingId !== entry.appointmentId}
                   onClick={() => advance({ id: entry.appointmentId, status: NEXT_STATUS[entry.status] })}
                 >
                   {NEXT_LABEL[entry.status]}

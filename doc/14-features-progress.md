@@ -97,6 +97,39 @@ A living roadmap of every feature in the system. Update the **Status** column wh
 | 57 | Migrate portal sub-pages to dark theme | 🟡 | Shell is dark; `PortalBookPage`, `PortalConfirmationPage`, `PortalQueuePage`, `PortalWalkInPage` still use light content |
 | 58 | Dashboard copy de-clinic'd | 🔴 | Staff dashboard still says "clinic" in a few strings |
 
+## Next-level upgrade roadmap (not processed yet)
+
+Prioritised by impact-per-effort. All items 🔴 unless noted.
+
+### Tier 1 — Turn the LLM into a real agent
+| # | Feature | Status | Notes |
+| --- | --- | --- | --- |
+| 59 | RAG over MongoDB (patients, treatments, appointments) | 🔴 | Use Mongo Atlas Vector Search (already on Atlas) or Qdrant. Lets AI chat answer real patient-history questions instead of hallucinating |
+| 60 | Tool-calling loop for Gemini (read-only tools) | ✅ | Phase 1a done 2026-07-26. 5 tools: `find_patient`, `get_patient_history`, `get_queue_status`, `get_appointments_for`, `check_availability`. See [09-ai-ml.md](09-ai-ml.md). Write tools + Telegram wiring = Phase 1b |
+
+### Tier 2 — Make it feel autonomous
+| # | Feature | Status | Notes |
+| --- | --- | --- | --- |
+| 61 | Nightly agent job: draft next-day reminders + flag no-show risk | 🔴 | Combine ML wait-time / no-show signals with LLM drafting; human one-click approval |
+| 62 | Multi-channel messaging (WhatsApp Business / Twilio SMS) | 🔴 | Same agent brain, add channels beyond Telegram |
+
+### Tier 3 — Production credibility
+| # | Feature | Status | Notes |
+| --- | --- | --- | --- |
+| 63 | LLM eval suite | 🔴 | Fixed set of "user says X → bot should do Y" cases. Guards prompt/model changes |
+| 64 | LLM observability (Langfuse / LangSmith / Helicone) | 🔴 | Trace every AI call for debugging + cost visibility |
+| 65 | Auth hardening: refresh tokens + rate limits on `/public/*` and AI endpoints | 🔴 | LLM endpoints cost money — protect from abuse |
+| 66 | Redis (pub/sub for multi-worker WS, LLM response cache, background jobs) | 🔴 | Unblocks horizontal scale; replaces in-process APScheduler when needed |
+| 67 | Secret-scanning pre-commit hook (gitleaks / git-secrets) | 🔴 | Prevent repeat of the 2026-07-26 Telegram + Gemini key leak |
+
+### Tier 4 — Product polish
+| # | Feature | Status | Notes |
+| --- | --- | --- | --- |
+| 68 | ML explainability panel (feature importances, recent accuracy) | 🔴 | Turns wait-time black box into a trust feature |
+| 69 | Provider-agnostic LLM adapter (Gemini / Claude / GPT behind one interface) | 🔴 | Enables A/B testing and vendor negotiation |
+
+**Recommended first move:** #59 + #60 together — RAG + tool-calling on the Telegram bot. This is the jump from "AI-assisted CRUD app" to genuine AI automation product.
+
 ## Decisions log
 
 | Date | Decision | Rationale |

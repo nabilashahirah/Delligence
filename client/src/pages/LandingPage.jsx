@@ -2,8 +2,11 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles, ArrowRight, ShieldCheck, MessageSquare,
-  Calendar, Users, Activity, LogIn,
+  Calendar, Users, Activity, LogIn, Mail,
 } from 'lucide-react';
+
+const DEMO_EMAIL = 'nnabila.salim@gmail.com';
+const DEMO_MAILTO = `mailto:${DEMO_EMAIL}?subject=Delligence%20demo%20request&body=Hi%2C%0A%0AI%27d%20like%20to%20see%20a%20Delligence%20demo.%0A%0ABusiness%20name%3A%0AType%20of%20business%3A%0APreferred%20date%2Ftime%3A%0A%0AThanks%21`;
 import useAuthStore from '../store/authStore';
 
 const PINK   = '#FF2D8F';
@@ -83,6 +86,22 @@ export default function LandingPage() {
             <LogIn className="w-4 h-4" />
             Staff Sign In
           </button>
+          <a
+            href={DEMO_MAILTO}
+            className="hidden md:flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-full transition-colors"
+            style={{ color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.2)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#fff';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+            }}
+          >
+            <Mail className="w-4 h-4" />
+            Request Demo
+          </a>
           <button
             onClick={() => navigate('/portal')}
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-full transition-transform hover:scale-105"
@@ -176,6 +195,26 @@ export default function LandingPage() {
           <p className="mt-5 text-xs text-white/40">
             Customers: book without an account · Staff: full dashboard access
           </p>
+
+          {/* Request Demo — for prospective businesses */}
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <a
+              href={DEMO_MAILTO}
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-transform hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, ${GOLD}, #f97316)`,
+                color: '#1a0f00',
+                boxShadow: `0 8px 24px ${GOLD}55`,
+              }}
+            >
+              <Mail className="w-4 h-4" />
+              Request a Demo for Your Business
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </a>
+            <p className="text-xs text-white/40">
+              Running a clinic, salon, or spa? See Delligence in action.
+            </p>
+          </div>
         </div>
 
         {/* ── Feature strip ── */}

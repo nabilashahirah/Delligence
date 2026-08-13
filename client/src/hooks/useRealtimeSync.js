@@ -35,9 +35,19 @@ export default function useRealtimeSync() {
                 qc.invalidateQueries({ queryKey: ['queue'] });
                 return old;
               }
+              // Update cards mentioned in the WS payload; keep others untouched.
+              // Backend may broadcast a per-dentist slice, so filtering out
+              // unmentioned cards would cause them to disappear then reappear
+              // when the HTTP refetch completes.
+              const wsIds = new Set(msg.queue.map(q => q.appointmentId));
+              const completedIds = new Set(
+                msg.queue.filter(q => q.status === 'completed' || q.status === 'cancelled' || q.status === 'no-show')
+                          .map(q => q.appointmentId)
+              );
               const updated = old.data.data.queue
-                .filter(c => wsMap[c.appointmentId])
+                .filter(c => !completedIds.has(c.appointmentId))
                 .map(c => {
+                  if (!wsIds.has(c.appointmentId)) return c;
                   const w = wsMap[c.appointmentId];
                   return { ...c, position: w.position, status: w.status, estimatedWaitMinutes: w.estimatedWait };
                 })

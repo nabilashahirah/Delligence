@@ -2,6 +2,13 @@
 
 Track meaningful documentation changes here. Newest first.
 
+## 2026-07-26 (AI chat → tool-calling agent, Phase 1a)
+
+- **New:** [app/services/ai_tools.py](../app/services/ai_tools.py) — 5 read-only tool executors (`find_patient`, `get_patient_history`, `get_queue_status`, `get_appointments_for`, `check_availability`) plus their Gemini `FunctionDeclaration` schemas.
+- **Rewritten:** [app/services/ai_chat.py](../app/services/ai_chat.py) `answer()` is now a tool-calling loop (max 6 iterations) instead of a pre-built JSON context blob. The LLM decides which tools to invoke, sees the results, and produces a grounded answer. `draft_promo()` is unchanged.
+- Updated [doc/09-ai-ml.md](09-ai-ml.md) with the new architecture, tool table, and latency/cost note.
+- Marks item #60 in the [roadmap](14-features-progress.md) as delivered. Item #59 (RAG) intentionally deferred — for structured Mongo data, tools are simpler and more accurate than embeddings.
+
 ## 2026-07-23 (patient detail full-width)
 
 - Reverted `PatientDetailPage` to fill the container (was `max-w-4xl mx-auto`, now no cap). Detail pages have richer content (info card + treatment history) and read better spanning the full 1600px layout container, matching list pages like `PatientsPage`.

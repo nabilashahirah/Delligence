@@ -21,11 +21,11 @@ export default function Button({
 }) {
   return (
     <button
+      {...props}
       className={`inline-flex items-center justify-center gap-2 rounded-xl font-semibold
         transition-all disabled:opacity-50 disabled:cursor-not-allowed
         ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={loading || props.disabled}
-      {...props}
     >
       {loading && (
         <span className="h-3.5 w-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
