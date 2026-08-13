@@ -1,6 +1,10 @@
 node_modules/
 .env
 .claude/settings.local.json
+
+# Local ops utilities (contain admin creds or one-shot data fixes)
+reset_password.py
+fix_staff.py
 *.log
 dist/
 
