@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_URL } from '../config';
 
 // Separate axios instance — no JWT interceptors needed
 const publicApi = axios.create({
-  baseURL: 'http://localhost:8000/api/v1/public',
+  baseURL: `${API_URL}/public`,
   headers: { 'Content-Type': 'application/json' },
 });
 

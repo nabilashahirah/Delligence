@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getQueueStatus } from '../../api/portal.api';
 import { PortalShell, GradBtn } from './PortalLandingPage';
 
-const WS_URL = 'ws://localhost:8000/ws';
+import { WS_URL } from '../../config';
 
 const PINK   = '#FF2D8F';
 const PURPLE = '#A855F7';

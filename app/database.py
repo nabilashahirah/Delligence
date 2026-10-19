@@ -1,3 +1,4 @@
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from loguru import logger
@@ -5,7 +6,9 @@ from app.config import settings
 
 
 async def init_db():
-    client = AsyncIOMotorClient(settings.mongo_uri, tlsAllowInvalidCertificates=True)
+    # Verify Atlas TLS against certifi's CA bundle (Windows' store often lacks it)
+    tls_opts = {"tlsCAFile": certifi.where()} if settings.mongo_uri.startswith("mongodb+srv") else {}
+    client = AsyncIOMotorClient(settings.mongo_uri, **tls_opts)
     # database name is taken from the URI path (e.g. /dentelligence)
     db = client.get_default_database()
 

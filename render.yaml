@@ -1,0 +1,33 @@
+# Render Blueprint for the FastAPI backend.
+# Render dashboard → New → Blueprint → pick this repo. Secrets marked sync:false
+# are prompted for on first deploy.
+services:
+  - type: web
+    name: delligence-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # Single worker: the WebSocket manager and reminder scheduler live in-process
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false            # e.g. https://delligence.vercel.app
+      - key: PUBLIC_PORTAL_URL
+        sync: false            # e.g. https://delligence.vercel.app/portal
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_USERNAME
+        sync: false
+      - key: TELEGRAM_WEBHOOK_SECRET
+        sync: false

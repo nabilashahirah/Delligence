@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-const WS_URL = 'ws://localhost:8000/ws';
+import { WS_URL } from '../config';
 const RECONNECT_DELAY = 3000;
 
 export default function useRealtimeSync() {

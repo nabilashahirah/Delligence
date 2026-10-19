@@ -2,6 +2,13 @@
 
 Track meaningful documentation changes here. Newest first.
 
+## 2026-10-20 (deployment: Vercel + Render)
+
+- **New:** [client/src/config.js](../client/src/config.js) — `API_URL` / `WS_URL` derived from `VITE_API_URL`. Replaces hardcoded `localhost:8000` in `axios.js`, `portal.api.js`, `useRealtimeSync.js`, `PortalQueuePage.jsx`. Vite dev server now also proxies `/ws`.
+- **New:** [client/vercel.json](../client/vercel.json), [client/.env.example](../client/.env.example), [render.yaml](../render.yaml).
+- **Backend:** CORS origins from `CORS_ORIGINS` env (`settings.cors_origin_list`); Mongo client uses `certifi` CA bundle instead of `tlsAllowInvalidCertificates=True`. Added `certifi` to `requirements.txt`. Refreshed root `.env.example`.
+- Rewrote [doc/11-deployment.md](11-deployment.md) with the hosted-demo walkthrough and single-worker note.
+
 ## 2026-07-26 (AI chat → tool-calling agent, Phase 1a)
 
 - **New:** [app/services/ai_tools.py](../app/services/ai_tools.py) — 5 read-only tool executors (`find_patient`, `get_patient_history`, `get_queue_status`, `get_appointments_for`, `check_availability`) plus their Gemini `FunctionDeclaration` schemas.
