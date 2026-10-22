@@ -2,6 +2,10 @@
 
 Track meaningful documentation changes here. Newest first.
 
+## 2026-10-22 (CLAUDE.md)
+
+- **New:** [CLAUDE.md](../CLAUDE.md) at repo root — run commands and project rules for AI coding assistants: docs-with-every-change, read-only agent tools (write tools only via staff confirmation), single backend worker, no hardcoded hosts, no secrets or real patient data.
+
 ## 2026-10-20 (deployment: Vercel + Render)
 
 - **New:** [client/src/config.js](../client/src/config.js) — `API_URL` / `WS_URL` derived from `VITE_API_URL`. Replaces hardcoded `localhost:8000` in `axios.js`, `portal.api.js`, `useRealtimeSync.js`, `PortalQueuePage.jsx`. Vite dev server now also proxies `/ws`.
