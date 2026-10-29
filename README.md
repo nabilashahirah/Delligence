@@ -115,4 +115,4 @@ See [doc/14-features-progress.md](doc/14-features-progress.md) for the full road
 
 ## License
 
-Private / internal. Not currently open source.
+Portfolio project. The code is public for review; it is not licensed for reuse.

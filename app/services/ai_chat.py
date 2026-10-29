@@ -4,6 +4,9 @@ from google.genai import types
 from app.config import settings
 from app.services.ai_tools import TOOL_REGISTRY
 
+# Upper bound on tool calls per question, so a confused model cannot loop forever.
+MAX_TOOL_CALLS = 6
+
 client = genai.Client(api_key=settings.gemini_api_key)
 
 _SYSTEM = """You are Dentelligence Assistant, an AI agent embedded in a dental clinic management system.
@@ -40,6 +43,9 @@ async def answer(question: str) -> str:
         config=types.GenerateContentConfig(
             system_instruction=_SYSTEM,
             tools=list(TOOL_REGISTRY.values()),
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                maximum_remote_calls=MAX_TOOL_CALLS,
+            ),
             max_output_tokens=1024,
         ),
     )

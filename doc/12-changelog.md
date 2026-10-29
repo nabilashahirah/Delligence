@@ -2,6 +2,12 @@
 
 Track meaningful documentation changes here. Newest first.
 
+## 2026-10-29 (agent hardening + docs match code)
+
+- **Agent:** [app/services/ai_chat.py](../app/services/ai_chat.py) caps tool calls per question at `MAX_TOOL_CALLS = 6` via the SDK's `AutomaticFunctionCallingConfig`.
+- **Agent:** [app/services/ai_tools.py](../app/services/ai_tools.py) `find_patient` now escapes its search text with `re.escape` before the Mongo `$regex` query.
+- **Docs:** [09-ai-ml.md](09-ai-ml.md) now describes the real loop (SDK automatic function calling, not a hand-written loop), the correct request body (`question`, not `message`) and the model name. Roadmap #18 note updated. README licence line reworded for a public repo.
+
 ## 2026-10-22 (CLAUDE.md)
 
 - **New:** [CLAUDE.md](../CLAUDE.md) at repo root — run commands and project rules for AI coding assistants: docs-with-every-change, read-only agent tools (write tools only via staff confirmation), single backend worker, no hardcoded hosts, no secrets or real patient data.
