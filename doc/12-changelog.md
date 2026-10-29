@@ -2,6 +2,10 @@
 
 Track meaningful documentation changes here. Newest first.
 
+## 2026-10-29 (demo video)
+
+- README links to the demo video: https://youtu.be/WelZX0Ok6qg
+
 ## 2026-10-29 (agent hardening + docs match code)
 
 - **Agent:** [app/services/ai_chat.py](../app/services/ai_chat.py) caps tool calls per question at `MAX_TOOL_CALLS = 6` via the SDK's `AutomaticFunctionCallingConfig`.

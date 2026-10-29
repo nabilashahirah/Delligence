@@ -2,6 +2,8 @@
 
 **AI-powered practice management for any appointment-based business.**
 
+▶️ **[Watch the demo video](https://youtu.be/WelZX0Ok6qg)** (all data shown is fake demo data).
+
 Delligence is a full-stack platform that replaces spreadsheets, missed calls, and manual scheduling with a live queue, ML wait-time predictions, and an **AI agent** that queries your data through tools instead of guessing.
 
 Originally built for dental clinics — the same platform runs unchanged for salons, physio, spas, or any service business.
