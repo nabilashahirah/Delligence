@@ -6,12 +6,12 @@
 
 - Uses **`gemini-flash-latest`** via the `google-genai` SDK. This alias tracks whichever current model Google recommends — safer than pinning a version that may be retired or drop from your free-tier quota. `max_output_tokens` is 1024 to leave headroom for the model's internal thinking overhead.
 - Requires `GEMINI_API_KEY` in `.env`.
-- **Architecture: tool-calling loop** (Phase 1a of the AI-automation roadmap). Instead of pre-building a JSON context blob, the LLM is given a set of **read-only tools** and decides which to call. The service loops (up to `MAX_TOOL_ITERATIONS = 6`) — model call → execute any function calls → feed results back → repeat until the model produces a plain text answer.
+- **Architecture: tool-calling loop** (Phase 1a of the AI-automation roadmap). Instead of pre-building a JSON context blob, the LLM is given a set of **read-only tools** and decides which to call. The loop is handled by the `google-genai` SDK's automatic function calling: the Python tool functions in `TOOL_REGISTRY` are passed straight to the model, and the SDK runs model call → execute any function calls → feed results back → repeat until the model produces a plain text answer. It is capped at `MAX_TOOL_CALLS = 6` tool calls per question (`AutomaticFunctionCallingConfig(maximum_remote_calls=...)`) so a confused model cannot loop forever.
 - This makes the assistant an **agent**, not a chatbot: it takes actions (queries Mongo through tools) rather than answering from a fixed context.
 
 ### Tools — [app/services/ai_tools.py](../app/services/ai_tools.py)
 
-All read-only. Registered in `TOOL_REGISTRY` and declared to Gemini via `TOOL_DECLARATIONS`.
+All read-only. Registered in `TOOL_REGISTRY`; the SDK builds each tool's schema from the function signature. `TOOL_DECLARATIONS` keeps hand-written schemas for reference. `find_patient` escapes its search text (`re.escape`) so model input is matched literally, never run as a regex pattern.
 
 | Tool | Purpose |
 | --- | --- |
@@ -29,7 +29,7 @@ Each user question now costs 2–4 Gemini calls (one per loop iteration). Expect
 
 ### Route
 
-`POST /api/v1/ai/chat` — body `{ "message": "How many patients are waiting right now?" }`.
+`POST /api/v1/ai/chat` — body `{ "question": "How many patients are waiting right now?" }`. Requires a staff JWT.
 
 ### Frontend
 
@@ -40,7 +40,7 @@ Rendered by `AIChatWidget` (floating panel). Uses `client/src/api/ai.api.js`.
 Staff can turn a short brief into a polished Telegram promo message.
 
 - Endpoint: `POST /api/v1/messages/draft` — body `{brief, tone}` where `tone ∈ {friendly, professional, playful, urgent}`.
-- Backend: `ai_chat.draft_promo` — same Gemini 2.0 Flash client, different system prompt (`_PROMO_SYSTEM`).
+- Backend: `ai_chat.draft_promo` — same Gemini client (`gemini-flash-latest`), different system prompt (`_PROMO_SYSTEM`).
 - Frontend: **"✨ Draft with AI"** button on the Messages page opens a dialog. On generation, the returned text is placed in the compose textarea for staff review before sending.
 
 The system prompt enforces:

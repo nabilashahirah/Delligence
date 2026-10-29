@@ -35,7 +35,7 @@ A living roadmap of every feature in the system. Update the **Status** column wh
 
 | # | Feature | Status | Notes |
 | --- | --- | --- | --- |
-| 18 | AI chat widget (Gemini) | ✅ | Grounded in today's clinic snapshot. Uses `gemini-flash-latest` |
+| 18 | AI chat widget (Gemini) | ✅ | Tool-calling agent over live data (see #60). Uses `gemini-flash-latest` |
 | 19 | ML wait-time prediction | ✅ | GradientBoostingRegressor |
 | 20 | Historical-avg fallback | ✅ | ≥3 samples required |
 | 21 | Scheduled-duration fallback | ✅ | Last-resort |

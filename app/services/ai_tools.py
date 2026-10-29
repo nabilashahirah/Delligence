@@ -3,6 +3,7 @@
 All tools are read-only. Write tools (booking, sending messages) will be
 introduced in Phase 1b behind an explicit confirmation UX.
 """
+import re
 from datetime import datetime, timedelta, time
 from typing import Optional
 from beanie import PydanticObjectId
@@ -34,7 +35,8 @@ async def find_patient(query: str, limit: int = 5) -> dict:
     if not q:
         return {"matches": []}
 
-    regex = {"$regex": q, "$options": "i"}
+    # Escape the input so text from the model is matched literally, not run as a regex pattern.
+    regex = {"$regex": re.escape(q), "$options": "i"}
     patients = await Patient.find({
         "$or": [
             {"id_number": regex},
